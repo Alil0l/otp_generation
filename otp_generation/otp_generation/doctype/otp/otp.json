@@ -57,7 +57,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Purpose",
-   "options": "sign_up\nreset_password",
+   "options": "sign_up\nreset_password\nlogin",
    "reqd": 1
   },
   {
@@ -115,7 +115,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-12-12 21:22:48.418986",
+ "modified": "2026-07-04 07:27:47.440789",
  "modified_by": "Administrator",
  "module": "OTP Generation",
  "name": "OTP",
