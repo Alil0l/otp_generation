@@ -49,18 +49,18 @@ class OTP(Document):
 			otp_doc.save(ignore_permissions=True)
 
 
-def generate(email=None, phone=None, purpose=None, user=None, send=True):
+def generate(email=None, phone=None, purpose=None, user=None, send=True, delivery_method=None):
 	settings = frappe.get_single("OTP Settings")
-	delivery_method = settings.otp_delivery_type or "Email"
-	
+	resolved_method = delivery_method or settings.otp_delivery_type or "Email"
+
 	if not settings.email_account and not settings.sms_sender:
 		frappe.throw(_("You need to configure either Email Account or SMS sender in OTP Settings"))
 
-	if delivery_method in ["Email", "Both"] and not email:
-		frappe.throw(_(f"Email is required for {delivery_method} delivery method"))
+	if resolved_method in ["Email", "Both"] and not email:
+		frappe.throw(_(f"Email is required for {resolved_method} delivery method"))
 
-	if delivery_method in ["SMS", "Both"] and not phone:
-		frappe.throw(_(f"Phone is required for {delivery_method} delivery method"))
+	if resolved_method in ["SMS", "Both"] and not phone:
+		frappe.throw(_(f"Phone is required for {resolved_method} delivery method"))
 
 	otp_length = settings.otp_length or 6
 	otp_code_type = settings.otp_code_type or "Numeric"
@@ -83,7 +83,7 @@ def generate(email=None, phone=None, purpose=None, user=None, send=True):
 			"phone": phone,
 			"purpose": purpose,
 			"user": user,
-			"delivery_method": delivery_method,
+			"delivery_method": resolved_method,
 			"status": "Valid",
 		}
 	)
@@ -93,7 +93,7 @@ def generate(email=None, phone=None, purpose=None, user=None, send=True):
 	send_results = []
 	if send:
 		try:
-			if delivery_method in ["Email", "Both"]:
+			if resolved_method in ["Email", "Both"]:
 				email_result = send_otp(
 					otp_code=otp_code,
 					delivery_method="Email",
@@ -104,7 +104,7 @@ def generate(email=None, phone=None, purpose=None, user=None, send=True):
 				if email_result:
 					send_results.append(email_result)
 
-			if delivery_method in ["SMS", "Both"]:
+			if resolved_method in ["SMS", "Both"]:
 				sms_result = send_otp(
 					otp_code=otp_code, delivery_method="SMS", email=email, phone=phone, otp_name=otp_doc.name
 				)

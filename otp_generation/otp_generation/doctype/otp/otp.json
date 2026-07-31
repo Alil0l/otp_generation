@@ -57,7 +57,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Purpose",
-   "options": "sign_up\nreset_password\nlogin",
+   "options": "sign_up\nreset_password\nlogin\nemail_verification",
    "reqd": 1
   },
   {

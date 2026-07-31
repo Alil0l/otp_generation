@@ -7,7 +7,7 @@ from otp_generation.otp_generation.doctype.otp.otp import verify as verify_otp
 
 # API: POST /api/method/otp_generation.api.otp.send_otp
 @frappe.whitelist(allow_guest=True, methods=["POST"])
-def send_otp(email=None, phone=None, purpose=None, user=None):
+def send_otp(email=None, phone=None, purpose=None, user=None, delivery_method=None):
 	"""
 	Send OTP API endpoint
 
@@ -16,6 +16,7 @@ def send_otp(email=None, phone=None, purpose=None, user=None):
 	    phone: Phone number (required for SMS delivery)
 	    purpose: Purpose of OTP (sign_up, reset_password, etc.)
 	    user: User link (optional)
+	    delivery_method: Override global OTP Settings delivery (Email/SMS/Both). If None, uses global setting.
 
 	Returns:
 	    Standardized response with OTP code and name
@@ -26,6 +27,7 @@ def send_otp(email=None, phone=None, purpose=None, user=None):
 			phone=phone,
 			purpose=purpose,
 			user=user,
+			delivery_method=delivery_method,
 		)
 		frappe.local.response["http_status_code"] = 200
 		return {"status": "success", "message": _("OTP generated successfully")}
